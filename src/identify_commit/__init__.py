@@ -3,12 +3,13 @@ import os
 import tempfile
 import pygit2
 import logging
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
 
 def find_commits_with_blob(repo_url, local_file_path):
-    if not os.path.exists(local_file_path):
+    if not Path.exists(local_file_path):
         raise FileNotFoundError(f"Local file not found: {local_file_path}")
 
     temp_dir = tempfile.mkdtemp()
