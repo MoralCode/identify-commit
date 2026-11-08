@@ -12,6 +12,18 @@ logger = logging.getLogger(__name__)
 # how many commits the user is willing to manually check
 # AKA how many commits should we narrow the search down to before considering the result acceptable
 MANUAL_CHECK_THRESHOLD = 5
+MAX_COMMIT_DISPLAY = 10
+
+def print_matches(logger, commits):
+    commits = list(commits)
+    count = len(commits)
+    msg = f"Found {len(commits)}"
+    if count > MAX_COMMIT_DISPLAY:
+        msg += f" (truncated to {MAX_COMMIT_DISPLAY})"
+        commits = commits[:MAX_COMMIT_DISPLAY]
+    msg += " matching commits:"
+    logger.debug(msg)
+    logger.debug(commits)
 
 def filter_commits_for_blob(repo:pygit2.Repo, commits:list[pygit2.Walker], target_blob_id):
     matching_commits = []
@@ -109,6 +121,7 @@ def main() -> None:
         # filter commits list by blob id
 
         matching_commits = filter_commits_for_blob(repo, matching_commits, target_blob_id)
+        print_matches(logger, matching_commits)
 
         # if 0: pick another
         if len(matching_commits) == 0:
