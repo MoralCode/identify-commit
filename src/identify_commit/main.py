@@ -9,6 +9,36 @@ from helpers import find_high_frequency_files
 logger = logging.getLogger(__name__)
 
 
+def filter_commits_for_blob(repo:pygit2.Repo, commits:list[pygit2.Walker], target_blob_id):
+    matching_commits = []
+    # 3. Replicates: xargs with ls-tree checking for blob match
+    for commit in commits:
+        try:
+            # tree.peel(pygit2.Tree, path) or walking the tree recursively
+            # To efficiently search the tree, we can walk the commit's tree entries
+            found = False
+            stack = [(commit.tree, "")]
+            while stack:
+                current_tree, current_path = stack.pop()
+                for entry in current_tree:
+                    if entry.id == target_blob_id:
+                        found = True
+                        break
+                    # If it's a subdirectory, push it to stack for recursive search
+                    elif entry.type_str == "tree":
+                        stack.append((repo[entry.id], entry.name))
+                if found:
+                    break
+
+            if found:
+                matching_commits.append(commit.hex)
+                logger.debug(commit.hex)
+        except Exception:
+            continue
+
+    return matching_commits
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description=(
@@ -56,8 +86,8 @@ def main() -> None:
                 walker.push(target)
         except Exception:
             pass
-
-    commits = list(walker)
+    # start out assuming every commit is a match
+    matching_commits = list(walker)
     
     # copy all files from local dir into the repo, with overwrite
 
@@ -72,39 +102,9 @@ def main() -> None:
             f" {target_blob_id} ({target_blob_id.hex})"
         )
 
-        
-
         # filter commits list by blob id
 
-        matching_commits = []
-
-        # 3. Replicates: xargs with ls-tree checking for blob match
-        for commit in walker:
-            try:
-                # tree.peel(pygit2.Tree, path) or walking the tree recursively
-                # To efficiently search the tree, we can walk the commit's tree entries
-                found = False
-                stack = [(commit.tree, "")]
-                while stack:
-                    current_tree, current_path = stack.pop()
-                    for entry in current_tree:
-                        if entry.id == target_blob_id:
-                            found = True
-                            break
-                        # If it's a subdirectory, push it to stack for recursive search
-                        elif entry.type_str == "tree":
-                            stack.append((repo[entry.id], entry.name))
-                    if found:
-                        break
-
-                if found:
-                    matching_commits.append(commit.hex)
-                    logger.debug(commit.hex)
-            except Exception:
-                continue
-
-        return matching_commits
-
+        matching_commits = filter_commits_for_blob(repo, matching_commits, target_blob_id)
 
 
 
