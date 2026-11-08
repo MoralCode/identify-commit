@@ -7,24 +7,56 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
-def find_commits_with_blob(repo_url, local_file_path):
-    if not Path.exists(local_file_path):
+
+def main() -> None:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Find commits containing a specific local file blob using libgit2."
+        )
+    )
+    parser.add_argument("repo_url", help="URL to the git repository the files came from")
+    parser.add_argument(
+        "local_dir", help="Path to the directory of the local files"
+    )
+    parser.add_argument('--level',
+                    default='warning',
+                    help='Provide logging level. Example --loglevel debug, default=warning' )
+
+    args = parser.parse_args()
+
+    logger.basicConfig( level=args.loglevel.upper() )
+    logger.info( 'Logging now setup.' )
+
+	if not Path.exists(local_file_path):
         raise FileNotFoundError(f"Local file not found: {local_file_path}")
 
-    temp_dir = tempfile.mkdtemp()
-    try:
-        print(f"Cloning repository from {repo_url}...")
-        # Clone as bare repository for fast history traversal
-        repo = pygit2.clone_repository(repo_url, temp_dir, bare=True)
+    # make temp dir
+	temp_dir = tempfile.mkdtemp()
 
-        # 1. Replicates: git hash-object <file>
-        target_blob_id = pygit2.hashfile(local_file_path)
-        print(
-            f"Target blob OID (hash-object):"
-            f" {target_blob_id} ({target_blob_id.hex})"
-        )
+	repo_url = args.repo_url
+	local_dir = args.local_dir
 
-        # 2. Replicates: git rev-list --all traversal
+    # clone repo
+	logger.info(f"Cloning repository from {repo_url}...")
+	# Clone as bare repository for fast history traversal
+	repo = pygit2.clone_repository(repo_url, temp_dir, bare=True)
+	
+    # copy all files from local dir into the repo, with overwrite
+
+
+    # pick a file with high frequency updates
+
+    # get its hash
+	# 1. Replicates: git hash-object <file>
+	target_blob_id = pygit2.hashfile(local_file_path)
+	print(
+		f"Target blob OID (hash-object):"
+		f" {target_blob_id} ({target_blob_id.hex})"
+	)
+
+    # search commits with that file hash
+
+	# 2. Replicates: git rev-list --all traversal
         print("Walking all commits (--all)...")
         walker = repo.walk(repo.head.target, pygit2.enums.SortMode.TIME)
 
@@ -65,29 +97,14 @@ def find_commits_with_blob(repo_url, local_file_path):
                 continue
 
         return matching_commits
-    finally:
-        import shutil
-
-        shutil.rmtree(temp_dir)
 
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser(
-        description=(
-            "Find commits containing a specific local file blob using libgit2."
-        )
-    )
-    parser.add_argument("repo_url", help="URL to the git repository the files came from")
-    parser.add_argument(
-        "local_dir", help="Path to the directory of the local files"
-    )
-    parser.add_argument('--level',
-                    default='warning',
-                    help='Provide logging level. Example --loglevel debug, default=warning' )
 
-    args = parser.parse_args()
-
-    logger.basicConfig( level=args.loglevel.upper() )
-    logger.info( 'Logging now setup.' )
-    find_commits_with_blob(args.repo_url, args.local_dir)
+    # if 0: pick another
+    # if 1: return
+    # if 2+: add commits to a set and filter on the next iteration to narrow down
+        
+    #cleanup temp dir
+	import shutil
+	shutil.rmtree(temp_dir)
