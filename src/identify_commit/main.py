@@ -1,5 +1,6 @@
 import argparse
 import os
+import sys
 import tempfile
 import pygit2
 import logging
@@ -106,11 +107,16 @@ def main() -> None:
 
         matching_commits = filter_commits_for_blob(repo, matching_commits, target_blob_id)
 
-
-
-    # if 0: pick another
-    # if 1: return
-    # if 2+: add commits to a set and filter on the next iteration to narrow down
+        # if 0: pick another
+        if len(matching_commits) == 0:
+            pass
+        elif len(matching_commits) == 1:
+            logger.info(matching_commits[0].hex)
+            sys.exit(0)
+            # if 1: return
+        elif len(matching_commits) >= 2:
+            # if 2+: add commits to a set and filter on the next iteration to narrow down
+            pass
         
     #cleanup temp dir
     import shutil
