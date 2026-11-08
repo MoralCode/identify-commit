@@ -33,7 +33,7 @@ def find_commits_with_blob(repo_url, local_file_path):
             try:
                 target = repo.lookup_reference(refname).target
                 if isinstance(target, pygit2.Oid):
-                walker.push(target)
+                    walker.push(target)
             except Exception:
                 pass
 
@@ -50,7 +50,7 @@ def find_commits_with_blob(repo_url, local_file_path):
                     current_tree, current_path = stack.pop()
                     for entry in current_tree:
                         if entry.id == target_blob_id:
-                        found = True
+                            found = True
                             break
                         # If it's a subdirectory, push it to stack for recursive search
                         elif entry.type_str == "tree":
