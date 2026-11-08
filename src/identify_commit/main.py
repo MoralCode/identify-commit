@@ -104,8 +104,8 @@ def main() -> None:
         "local_dir", help="Path to the directory of the local files"
     )
     parser.add_argument('--level',
-                    default='warning',
-                    help='Provide logging level. Example --loglevel debug, default=warning' )
+                    default='info',
+                    help='Provide logging level. Example --loglevel debug, default=info' )
 
     args = parser.parse_args()
 
@@ -130,7 +130,7 @@ def main() -> None:
 
     # get commits list
     # 2. Replicates: git rev-list --all traversal
-    logger.info("Walking all commits (--all)...")
+    logger.debug("Walking all commits (--all)...")
     walker = repo.walk(repo.head.target, pygit2.enums.SortMode.TIME)
 
     # Push all references (branches, tags, remotes) into the walker to cover --all
