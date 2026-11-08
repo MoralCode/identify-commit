@@ -31,7 +31,7 @@ def filter_commits_for_blob(repo:pygit2.Repo, commits:list[pygit2.Walker], targe
                     break
 
             if found:
-                matching_commits.append(commit.hex)
+                matching_commits.append(commit)
                 logger.debug(commit.hex)
         except Exception:
             continue
