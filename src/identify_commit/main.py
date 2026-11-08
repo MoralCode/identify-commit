@@ -53,6 +53,46 @@ def filter_commits_for_blob(repo:pygit2.Repo, commits:list[pygit2.Walker], targe
     return matching_commits
 
 
+def identify_candidate_commits(repo:pygit2.Repo, commits:list[pygit2.Walker], candidate_files, logger):
+
+    # start out assuming every commit is a match
+    matching_commits = list(commits)
+    
+    # pick a file with high frequency updates
+    for local_file_path in candidate_files:
+        logger.debug(f"Evaluating file: {local_file_path}")
+        # relative_filepath = local_file_path.relative_to(local_dir)
+        # logger.debug(relative_filepath)
+        # in_repo_filepath = temp_dir.joinpath(relative_filepath)
+        # logger.debug(in_repo_filepath)
+
+        # copy the file to the current repo
+        # apparrently not needed as the hashing works without the phyle being in the repo????
+        
+        # get its hash
+        # 1. Replicates: git hash-object <file>
+        target_blob_id = pygit2.hashfile(local_file_path)
+        logger.debug(
+            f"Target blob OID (hash-object):"
+            f" {target_blob_id} ({str(target_blob_id)})"
+        )
+
+        # filter commits list by blob id
+        matching_commits_new = filter_commits_for_blob(repo, matching_commits, target_blob_id)
+        print_matches(logger, matching_commits_new)
+
+        # if 0: pick another
+        if len(matching_commits_new) == 0:
+            raise NotImplementedError(f"We ran out of viable commits to check before finding a definitive match. One of the input files (likely {local_file_path}) may not be byte-for-byte match for any of its versions in this repo. Before checkign this file we had {len(matching_commits)} candidate matches")
+        
+        matching_commits = matching_commits_new
+        
+        
+        if len(matching_commits) <= MANUAL_CHECK_THRESHOLD:
+            return matching_commits
+    return matching_commits
+        
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description=(
@@ -101,34 +141,12 @@ def main() -> None:
                 walker.push(target)
         except Exception:
             pass
-    # start out assuming every commit is a match
-    matching_commits = list(walker)
     
-    # copy all files from local dir into the repo, with overwrite
-
-
-    # pick a file with high frequency updates
-    for local_file_path in find_high_frequency_files(local_dir):
-        logger.debug(f"Evaluating file: {local_file_path}")
-        # relative_filepath = local_file_path.relative_to(local_dir)
-        # logger.debug(relative_filepath)
-        # in_repo_filepath = temp_dir.joinpath(relative_filepath)
-        # logger.debug(in_repo_filepath)
-
-        # copy the file to the current repo
-        # apparrently not needed as the hashing works without the phyle being in the repo????
-        
-        # get its hash
-        # 1. Replicates: git hash-object <file>
-        target_blob_id = pygit2.hashfile(local_file_path)
-        logger.debug(
-            f"Target blob OID (hash-object):"
-            f" {target_blob_id} ({str(target_blob_id)})"
-        )
-
-        # filter commits list by blob id
-        matching_commits = filter_commits_for_blob(repo, matching_commits, target_blob_id)
-        print_matches(logger, matching_commits)
+    matching_commits = identify_candidate_commits(
+        repo,
+        walker,
+        find_high_frequency_files(local_dir),
+        logger)
 
         # if 0: pick another
         if len(matching_commits) == 0:
