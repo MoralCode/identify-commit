@@ -59,7 +59,7 @@ def main() -> None:
 
     args = parser.parse_args()
 
-    logger.basicConfig( level=args.loglevel.upper() )
+    logging.basicConfig( level=args.level.upper() )
     logger.info( 'Logging now setup.' )
 
     local_dir = args.local_dir
