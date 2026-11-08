@@ -53,3 +53,8 @@ The `example` folder contains three files from the https://github.com/Alamofire/
 3. **Blob Hashing:** iterates through files, high frequency updates first, computes the local Git blob hash (`hash-object`) of each.
 4. **Iterative Filtering:** Filters the candidate commit list file-by-file using the blob hashes until a small (<10 by default) list of matching commit is isolated.
 5. **Output** These candidate commits ar printed so you can check to see which one is likely to be the one you want.
+
+
+
+## Licensing
+The files under `example/` are exempt from the LICENSE.md in this repo because they are governed by the license file in that folder, which was taken verbatim from the Alamofire repository (MIT licensed).
