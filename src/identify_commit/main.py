@@ -4,7 +4,7 @@ import tempfile
 import pygit2
 import logging
 from pathlib import Path
-from helpers import find_high_frequency_files
+from .helpers import find_high_frequency_files
 
 logger = logging.getLogger(__name__)
 
