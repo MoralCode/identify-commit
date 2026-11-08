@@ -27,8 +27,10 @@ def main() -> None:
     logger.basicConfig( level=args.loglevel.upper() )
     logger.info( 'Logging now setup.' )
 
-    if not Path.exists(local_file_path):
-        raise FileNotFoundError(f"Local file not found: {local_file_path}")
+    local_dir = args.local_dir
+
+    if not Path.exists(local_dir):
+        raise FileNotFoundError(f"Local dir not found: {local_dir}")
 
     # make temp dir
     temp_dir = tempfile.mkdtemp()
