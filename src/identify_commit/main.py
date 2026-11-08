@@ -87,7 +87,8 @@ def main() -> None:
 
     # clone repo
     logger.info(f"Cloning repository from {repo_url}...")
-    repo = pygit2.clone_repository(repo_url, temp_dir)
+    repo = pygit2.clone_repository(repo_url, temp_dir, bare=True)
+    # the clone happens directly into temp_dir per observation
 
     # get commits list
     # 2. Replicates: git rev-list --all traversal
