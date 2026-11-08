@@ -129,19 +129,18 @@ def main() -> None:
         )
 
         # filter commits list by blob id
-
         matching_commits = filter_commits_for_blob(repo, matching_commits, target_blob_id)
         print_matches(logger, matching_commits)
 
         # if 0: pick another
         if len(matching_commits) == 0:
-            pass
+            raise NotImplementedError("We ran out of viable commits to check before finding a definitive match. One of the input files is not a byte-for-byte match for any of its versions in this repo")
         elif len(matching_commits) <= MANUAL_CHECK_THRESHOLD:
             logger.info(str(matching_commits[0]))
             sys.exit(0)
             # if 1: return
-        elif len(matching_commits) > MANUAL_CHECK_THRESHOLD:
-            # if 2+: add commits to a set and filter on the next iteration to narrow down
+        else:
+            # if we have too many commits, repeat the loop to bring in another file and keep filtering.
             pass
         
     #cleanup temp dir
