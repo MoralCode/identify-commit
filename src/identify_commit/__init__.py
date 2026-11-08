@@ -30,39 +30,39 @@ def find_commits_with_blob(repo_url, local_file_path):
 
         # Push all references (branches, tags, remotes) into the walker to cover --all
         for refname in repo.references:
-        try:
-            target = repo.lookup_reference(refname).target
-            if isinstance(target, pygit2.Oid):
-            walker.push(target)
-        except Exception:
-            pass
+            try:
+                target = repo.lookup_reference(refname).target
+                if isinstance(target, pygit2.Oid):
+                walker.push(target)
+            except Exception:
+                pass
 
         matching_commits = []
 
         # 3. Replicates: xargs with ls-tree checking for blob match
         for commit in walker:
-        try:
-            # tree.peel(pygit2.Tree, path) or walking the tree recursively
-            # To efficiently search the tree, we can walk the commit's tree entries
-            found = False
-            stack = [(commit.tree, "")]
-            while stack:
-            current_tree, current_path = stack.pop()
-            for entry in current_tree:
-                if entry.id == target_blob_id:
-                found = True
-                break
-                # If it's a subdirectory, push it to stack for recursive search
-                elif entry.type_str == "tree":
-                stack.append((repo[entry.id], entry.name))
-            if found:
-                break
+            try:
+                # tree.peel(pygit2.Tree, path) or walking the tree recursively
+                # To efficiently search the tree, we can walk the commit's tree entries
+                found = False
+                stack = [(commit.tree, "")]
+                while stack:
+                    current_tree, current_path = stack.pop()
+                    for entry in current_tree:
+                        if entry.id == target_blob_id:
+                        found = True
+                            break
+                        # If it's a subdirectory, push it to stack for recursive search
+                        elif entry.type_str == "tree":
+                            stack.append((repo[entry.id], entry.name))
+                    if found:
+                        break
 
-            if found:
-            matching_commits.append(commit.hex)
-            print(commit.hex)  # Prints the commit hash matching your echo {}
-        except Exception:
-            continue
+                if found:
+                    matching_commits.append(commit.hex)
+                    print(commit.hex)
+            except Exception:
+                continue
 
         return matching_commits
     finally:
