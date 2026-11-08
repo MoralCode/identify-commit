@@ -41,8 +41,7 @@ def main() -> None:
 
     # clone repo
     logger.info(f"Cloning repository from {repo_url}...")
-    # Clone as bare repository for fast history traversal
-    repo = pygit2.clone_repository(repo_url, temp_dir, bare=True)
+    repo = pygit2.clone_repository(repo_url, temp_dir)
     
     # copy all files from local dir into the repo, with overwrite
 
