@@ -62,16 +62,16 @@ def main() -> None:
     logging.basicConfig( level=args.level.upper() )
     logger.info( 'Logging now setup.' )
 
-    local_dir = args.local_dir
+    local_dir = Path(args.local_dir)
 
     if not Path.exists(local_dir):
         raise FileNotFoundError(f"Local dir not found: {local_dir}")
 
     # make temp dir
-    temp_dir = tempfile.mkdtemp()
+    temp_dir = Path(tempfile.mkdtemp())
 
     repo_url = args.repo_url
-    local_dir = args.local_dir
+    local_dir = Path(args.local_dir)
 
     # clone repo
     logger.info(f"Cloning repository from {repo_url}...")
