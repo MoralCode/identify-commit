@@ -42,6 +42,22 @@ def main() -> None:
     # clone repo
     logger.info(f"Cloning repository from {repo_url}...")
     repo = pygit2.clone_repository(repo_url, temp_dir)
+
+    # get commits list
+    # 2. Replicates: git rev-list --all traversal
+    logger.info("Walking all commits (--all)...")
+    walker = repo.walk(repo.head.target, pygit2.enums.SortMode.TIME)
+
+    # Push all references (branches, tags, remotes) into the walker to cover --all
+    for refname in repo.references:
+        try:
+            target = repo.lookup_reference(refname).target
+            if isinstance(target, pygit2.Oid):
+                walker.push(target)
+        except Exception:
+            pass
+
+    commits = list(walker)
     
     # copy all files from local dir into the repo, with overwrite
 
@@ -56,19 +72,7 @@ def main() -> None:
             f" {target_blob_id} ({target_blob_id.hex})"
         )
 
-        # get commits list
-        # 2. Replicates: git rev-list --all traversal
-        logger.info("Walking all commits (--all)...")
-        walker = repo.walk(repo.head.target, pygit2.enums.SortMode.TIME)
-
-        # Push all references (branches, tags, remotes) into the walker to cover --all
-        for refname in repo.references:
-            try:
-                target = repo.lookup_reference(refname).target
-                if isinstance(target, pygit2.Oid):
-                    walker.push(target)
-            except Exception:
-                pass
+        
 
         # filter commits list by blob id
 
