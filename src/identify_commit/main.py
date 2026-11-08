@@ -47,7 +47,6 @@ def filter_commits_for_blob(repo:pygit2.Repo, commits:list[pygit2.Walker], targe
 
             if found:
                 matching_commits.append(commit)
-                logger.debug(str(commit))
         except Exception:
             continue
 
