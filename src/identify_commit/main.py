@@ -56,8 +56,7 @@ def main() -> None:
             f" {target_blob_id} ({target_blob_id.hex})"
         )
 
-        # search commits with that file hash
-
+        # get commits list
         # 2. Replicates: git rev-list --all traversal
         logger.info("Walking all commits (--all)...")
         walker = repo.walk(repo.head.target, pygit2.enums.SortMode.TIME)
@@ -70,6 +69,8 @@ def main() -> None:
                     walker.push(target)
             except Exception:
                 pass
+
+        # filter commits list by blob id
 
         matching_commits = []
 
