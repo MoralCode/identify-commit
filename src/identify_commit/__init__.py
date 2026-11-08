@@ -73,10 +73,10 @@ def main() -> None:
           "Find commits containing a specific local file blob using libgit2."
       )
   )
-  parser.add_argument("repo_url", help="URL to the git repository")
+  parser.add_argument("repo_url", help="URL to the git repository the files came from")
   parser.add_argument(
-      "local_file_path", help="Path to local file (e.g., Gemfile.lock)"
+      "local_dir", help="Path to the directory of the local files"
   )
 
   args = parser.parse_args()
-  find_commits_with_blob(args.repo_url, args.local_file_path)
+  find_commits_with_blob(args.repo_url, args.local_dir)
