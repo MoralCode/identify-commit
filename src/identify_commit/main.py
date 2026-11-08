@@ -51,7 +51,7 @@ def main() -> None:
         # get its hash
         # 1. Replicates: git hash-object <file>
         target_blob_id = pygit2.hashfile(local_file_path)
-        print(
+        logger.debug(
             f"Target blob OID (hash-object):"
             f" {target_blob_id} ({target_blob_id.hex})"
         )
@@ -59,7 +59,7 @@ def main() -> None:
         # search commits with that file hash
 
         # 2. Replicates: git rev-list --all traversal
-        print("Walking all commits (--all)...")
+        logger.info("Walking all commits (--all)...")
         walker = repo.walk(repo.head.target, pygit2.enums.SortMode.TIME)
 
         # Push all references (branches, tags, remotes) into the walker to cover --all
@@ -94,7 +94,7 @@ def main() -> None:
 
                 if found:
                     matching_commits.append(commit.hex)
-                    print(commit.hex)
+                    logger.debug(commit.hex)
             except Exception:
                 continue
 
