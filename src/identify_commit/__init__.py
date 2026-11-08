@@ -67,8 +67,7 @@ def find_commits_with_blob(repo_url, local_file_path):
 
     shutil.rmtree(temp_dir)
 
-
-if __name__ == "__main__":
+def main() -> None:
   parser = argparse.ArgumentParser(
       description=(
           "Find commits containing a specific local file blob using libgit2."
