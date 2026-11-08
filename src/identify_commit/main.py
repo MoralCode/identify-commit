@@ -36,7 +36,7 @@ def filter_commits_for_blob(repo:pygit2.Repo, commits:list[pygit2.Walker], targe
 
             if found:
                 matching_commits.append(commit)
-                logger.debug(commit.hex)
+                logger.debug(str(commit))
         except Exception:
             continue
 
@@ -103,7 +103,7 @@ def main() -> None:
         target_blob_id = pygit2.hashfile(local_file_path)
         logger.debug(
             f"Target blob OID (hash-object):"
-            f" {target_blob_id} ({target_blob_id.hex})"
+            f" {target_blob_id} ({str(target_blob_id)})"
         )
 
         # filter commits list by blob id
@@ -114,7 +114,7 @@ def main() -> None:
         if len(matching_commits) == 0:
             pass
         elif len(matching_commits) <= MANUAL_CHECK_THRESHOLD:
-            logger.info(matching_commits[0].hex)
+            logger.info(str(matching_commits[0]))
             sys.exit(0)
             # if 1: return
         elif len(matching_commits) > MANUAL_CHECK_THRESHOLD:
