@@ -4,6 +4,7 @@ import tempfile
 import pygit2
 import logging
 from pathlib import Path
+from helpers import find_high_frequency_files
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +48,7 @@ def main() -> None:
 
 
     # pick a file with high frequency updates
-
+    for local_file_path in find_high_frequency_files(local_dir):
         # get its hash
         # 1. Replicates: git hash-object <file>
         target_blob_id = pygit2.hashfile(local_file_path)
