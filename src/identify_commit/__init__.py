@@ -2,6 +2,9 @@ import argparse
 import os
 import tempfile
 import pygit2
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def find_commits_with_blob(repo_url, local_file_path):
@@ -77,6 +80,12 @@ def main() -> None:
     parser.add_argument(
         "local_dir", help="Path to the directory of the local files"
     )
+    parser.add_argument('--level',
+                    default='warning',
+                    help='Provide logging level. Example --loglevel debug, default=warning' )
 
     args = parser.parse_args()
+
+    logger.basicConfig( level=args.loglevel.upper() )
+    logger.info( 'Logging now setup.' )
     find_commits_with_blob(args.repo_url, args.local_dir)
