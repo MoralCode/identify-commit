@@ -9,6 +9,9 @@ from .helpers import find_high_frequency_files
 
 logger = logging.getLogger(__name__)
 
+# how many commits the user is willing to manually check
+# AKA how many commits should we narrow the search down to before considering the result acceptable
+MANUAL_CHECK_THRESHOLD = 5
 
 def filter_commits_for_blob(repo:pygit2.Repo, commits:list[pygit2.Walker], target_blob_id):
     matching_commits = []
@@ -110,11 +113,11 @@ def main() -> None:
         # if 0: pick another
         if len(matching_commits) == 0:
             pass
-        elif len(matching_commits) == 1:
+        elif len(matching_commits) <= MANUAL_CHECK_THRESHOLD:
             logger.info(matching_commits[0].hex)
             sys.exit(0)
             # if 1: return
-        elif len(matching_commits) >= 2:
+        elif len(matching_commits) > MANUAL_CHECK_THRESHOLD:
             # if 2+: add commits to a set and filter on the next iteration to narrow down
             pass
         
