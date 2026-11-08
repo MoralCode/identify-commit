@@ -148,16 +148,12 @@ def main() -> None:
         find_high_frequency_files(local_dir),
         logger)
 
-        # if 0: pick another
-        if len(matching_commits) == 0:
-            raise NotImplementedError("We ran out of viable commits to check before finding a definitive match. One of the input files is not a byte-for-byte match for any of its versions in this repo")
-        elif len(matching_commits) <= MANUAL_CHECK_THRESHOLD:
-            logger.info(str(matching_commits[0]))
-            sys.exit(0)
-            # if 1: return
-        else:
-            # if we have too many commits, repeat the loop to bring in another file and keep filtering.
-            pass
-        
+    if len(matching_commits) <= MANUAL_CHECK_THRESHOLD:
+        for match in matching_commits:
+            logger.info(match)
+    else:
+        logger.info(f"Ran out of files to check before narrowing down the list of commits. Found {len(matching_commits)} potential matching commits with the files provided")
+    
+
     #cleanup temp dir
     temp_dir.unlink()
