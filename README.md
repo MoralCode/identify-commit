@@ -42,6 +42,10 @@ Run the tool from your command line by passing the repository URL and the path t
 uv run identify-commit <repo-url> <path/to/local-dir>
 ```
 
+## Example
+
+The `example` folder contains three files from the https://github.com/Alamofire/Alamofire repository. See if you can identify which version/commit of Alamofire they are from
+
 ## How It Works
 
 1. **Bare Clone:** Clones the remote repository into a temporary directory using a bare configuration for maximum speed.
