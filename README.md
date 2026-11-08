@@ -58,3 +58,7 @@ The `example` folder contains three files from the https://github.com/Alamofire/
 
 ## Licensing
 The files under `example/` are exempt from the LICENSE.md in this repo because they are governed by the license file in that folder, which was taken verbatim from the Alamofire repository (MIT licensed).
+
+## Generative AI disclosure
+
+Initial versions of this repo, and some boilerplate code were made with Gemini 3. The repository has been substantially human reviewed and re-factored since these generative changes were added. All commits containing AI generated code have a commit trailer disclosing such usage.
