@@ -46,17 +46,17 @@ def main() -> None:
 
     # pick a file with high frequency updates
 
-    # get its hash
-    # 1. Replicates: git hash-object <file>
-    target_blob_id = pygit2.hashfile(local_file_path)
-    print(
-        f"Target blob OID (hash-object):"
-        f" {target_blob_id} ({target_blob_id.hex})"
-    )
+        # get its hash
+        # 1. Replicates: git hash-object <file>
+        target_blob_id = pygit2.hashfile(local_file_path)
+        print(
+            f"Target blob OID (hash-object):"
+            f" {target_blob_id} ({target_blob_id.hex})"
+        )
 
-    # search commits with that file hash
+        # search commits with that file hash
 
-    # 2. Replicates: git rev-list --all traversal
+        # 2. Replicates: git rev-list --all traversal
         print("Walking all commits (--all)...")
         walker = repo.walk(repo.head.target, pygit2.enums.SortMode.TIME)
 
