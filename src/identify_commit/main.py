@@ -122,5 +122,4 @@ def main() -> None:
             pass
         
     #cleanup temp dir
-    import shutil
-    shutil.rmtree(temp_dir)
+    temp_dir.unlink()
