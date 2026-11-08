@@ -8,7 +8,7 @@ from src.identify_commit.helpers import find_high_frequency_files
 
 def test_find_high_frequency_files(tmp_path):
   # 1. Create files that should match the globs
-  (tmp_path / "CHANGELOG.MD").touch()
+  (tmp_path / "CHANGELOG.md").touch()
   (tmp_path / "Gemfile.lock").touch()
   (tmp_path / "pyproject.toml").touch()
 
@@ -21,5 +21,5 @@ def test_find_high_frequency_files(tmp_path):
   found_names = {f.name for f in found_files}
 
   # 4. Assert only expected files are returned
-  expected_names = {"CHANGELOG.MD", "Gemfile.lock", "pyproject.toml"}
+  expected_names = {"CHANGELOG.md", "Gemfile.lock", "pyproject.toml"}
   assert found_names == expected_names
