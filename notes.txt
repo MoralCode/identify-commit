@@ -1,0 +1,41 @@
+
+cp /local/copy/CHANGELOG.md /fresh/clone/CHANGELOG.md 
+
+git hash-object CHANGELOG.md
+a4beb308946b26a8e6e5c372eeb659c57b9ed7c2
+
+git rev-list --all | xargs -I{} git ls-tree -r {} | grep a4beb308946b26a8e6e5c372eeb659c57b9ed7c2
+100644 blob a4beb308946b26a8e6e5c372eeb659c57b9ed7c2    CHANGELOG.md
+100644 blob a4beb308946b26a8e6e5c372eeb659c57b9ed7c2    CHANGELOG.md
+100644 blob a4beb308946b26a8e6e5c372eeb659c57b9ed7c2    CHANGELOG.md
+100644 blob a4beb308946b26a8e6e5c372eeb659c57b9ed7c2    CHANGELOG.md
+100644 blob a4beb308946b26a8e6e5c372eeb659c57b9ed7c2    CHANGELOG.md
+100644 blob a4beb308946b26a8e6e5c372eeb659c57b9ed7c2    CHANGELOG.md
+
+git rev-list --all | xargs -I {} sh -c 'git ls-tree -r {} | grep -q a4beb308946b26a8e6e5c372eeb659c57b9ed7c2 && echo {}'
+5de514be7ce47c01bd6af5ca8743843f6f72ab01
+9b5bd5be3c2d451006ca16b286cf1ed30f434b9c
+6b3296bd3e975fb3e04cdf22761ddf44df7157a5
+b5c8945616aceab4c1afc96505314cb1a2947e7c
+c22c45e6af516b1a37c425577043cc3f03db0223
+f455c2975872ccd2d9c81594c658af65716e9b9a
+
+
+
+
+
+
+cp /local/copy/Gemfile.lock /fresh/clone/Gemfile.lock
+
+
+git hash-object Gemfile.lock
+519758a6b71f5731305cf9e9555979baac59e4a2
+
+git rev-list --all | xargs -I{} git ls-tree -r {} | grep 519758a6b71f5731305cf9e9555979baac59e4a2
+100644 blob 519758a6b71f5731305cf9e9555979baac59e4a2    Gemfile.lock
+100644 blob 519758a6b71f5731305cf9e9555979baac59e4a2    Gemfile.lock
+
+
+git rev-list --all | xargs -I {} sh -c 'git ls-tree -r {} | grep -q 519758a6b71f5731305cf9e9555979baac59e4a2 && echo {}'
+c22c45e6af516b1a37c425577043cc3f03db0223
+f455c2975872ccd2d9c81594c658af65716e9b9a
