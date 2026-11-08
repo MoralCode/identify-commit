@@ -110,6 +110,15 @@ def main() -> None:
 
     # pick a file with high frequency updates
     for local_file_path in find_high_frequency_files(local_dir):
+        logger.debug(f"Evaluating file: {local_file_path}")
+        # relative_filepath = local_file_path.relative_to(local_dir)
+        # logger.debug(relative_filepath)
+        # in_repo_filepath = temp_dir.joinpath(relative_filepath)
+        # logger.debug(in_repo_filepath)
+
+        # copy the file to the current repo
+        # apparrently not needed as the hashing works without the phyle being in the repo????
+        
         # get its hash
         # 1. Replicates: git hash-object <file>
         target_blob_id = pygit2.hashfile(local_file_path)
