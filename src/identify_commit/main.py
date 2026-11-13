@@ -83,9 +83,10 @@ def identify_candidate_commits(repo:pygit2.Repo, commits:list[pygit2.Walker], ca
 
         # if 0: pick another
         if len(matching_commits_new) == 0:
-            raise NotImplementedError(f"We ran out of viable commits to check before finding a definitive match. One of the input files (likely {local_file_path}) may not be byte-for-byte match for any of its versions in this repo. Before checkign this file we had {len(matching_commits)} candidate matches")
-        
-        matching_commits = matching_commits_new
+            logger.info("Skipping file because it doesn't match any known versions")
+            logger.debug(f"We ran out of viable commits to check before finding a definitive match. One of the input files (likely {local_file_path}) may not be byte-for-byte match for any of its versions in this repo. Before checking this file we had {len(matching_commits)} candidate matches")
+        else:
+            matching_commits = matching_commits_new
         
         
         if len(matching_commits) <= MANUAL_CHECK_THRESHOLD:
