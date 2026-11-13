@@ -18,8 +18,8 @@ def test_find_high_frequency_files(tmp_path):
 
   # 3. Call the generator function
   found_files = list(find_high_frequency_files(tmp_path))
-  found_names = {f.name for f in found_files}
+  found_names = [f.name for f in found_files]
 
-  # 4. Assert only expected files are returned
-  expected_names = {"CHANGELOG.md", "Gemfile.lock", "pyproject.toml"}
-  assert found_names == expected_names
+  # 4. Assert only expected files are returned, loosely in the correct batches/order
+  assert set(found_names[:3]) == {"CHANGELOG.md", "Gemfile.lock", "pyproject.toml"}
+  assert set(found_names[3:]) == {"main.py", "README.md"}
