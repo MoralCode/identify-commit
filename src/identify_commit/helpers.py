@@ -1,11 +1,16 @@
 from pathlib import Path
 import os
+from urllib.parse import urlparse
 
 # Directories to skip in arbitrary software projects
 IGNORE_DIRS = {
     '.git', 'node_modules', '__pycache__', 'venv', '.venv', 
     'target', 'build', 'dist', '.idea', '.vscode', 'coverage'
 }
+
+
+def is_likely_git_url(url):
+    return urlparse(url).scheme in ('http', 'https', 'ssh')
 
 def get_file_priority(path: Path) -> int:
     """Assigns a priority tier (lower number = higher frequency/importance)."""
