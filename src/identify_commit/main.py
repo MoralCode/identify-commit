@@ -119,42 +119,38 @@ def main() -> None:
         raise FileNotFoundError(f"Local dir not found: {local_dir}")
 
     # make temp dir
-    temp_dir = Path(tempfile.mkdtemp())
+    with tempfile.TemporaryDirectory() as temp_dir:
 
-    repo_url = args.repo_url
-    local_dir = Path(args.local_dir)
+        repo_url = args.repo_url
+        local_dir = Path(args.local_dir)
 
-    # clone repo
-    logger.info(f"Cloning repository from {repo_url}...")
-    repo = pygit2.clone_repository(repo_url, temp_dir, bare=True)
-    # the clone happens directly into temp_dir per observation
+        # clone repo
+        logger.info(f"Cloning repository from {repo_url}...")
+        repo = pygit2.clone_repository(repo_url, temp_dir, bare=True)
+        # the clone happens directly into temp_dir per observation
 
-    # get commits list
-    # 2. Replicates: git rev-list --all traversal
-    logger.debug("Walking all commits (--all)...")
-    walker = repo.walk(repo.head.target, pygit2.enums.SortMode.TIME)
+        # get commits list
+        # 2. Replicates: git rev-list --all traversal
+        logger.debug("Walking all commits (--all)...")
+        walker = repo.walk(repo.head.target, pygit2.enums.SortMode.TIME)
 
-    # Push all references (branches, tags, remotes) into the walker to cover --all
-    for refname in repo.references:
-        try:
-            target = repo.lookup_reference(refname).target
-            if isinstance(target, pygit2.Oid):
-                walker.push(target)
-        except Exception:
-            pass
-    
-    matching_commits = identify_candidate_commits(
-        repo,
-        walker,
-        find_high_frequency_files(local_dir),
-        logger)
+        # Push all references (branches, tags, remotes) into the walker to cover --all
+        for refname in repo.references:
+            try:
+                target = repo.lookup_reference(refname).target
+                if isinstance(target, pygit2.Oid):
+                    walker.push(target)
+            except Exception:
+                pass
+        
+        matching_commits = identify_candidate_commits(
+            repo,
+            walker,
+            find_high_frequency_files(local_dir),
+            logger)
 
-    if len(matching_commits) <= MANUAL_CHECK_THRESHOLD:
-        for match in matching_commits:
-            logger.info(match)
-    else:
-        logger.info(f"Ran out of files to check before narrowing down the list of commits. Found {len(matching_commits)} potential matching commits with the files provided")
-    
-
-    #cleanup temp dir
-    temp_dir.unlink()
+        if len(matching_commits) <= MANUAL_CHECK_THRESHOLD:
+            for match in matching_commits:
+                logger.info(match)
+        else:
+            logger.info(f"Ran out of files to check before narrowing down the list of commits. Found {len(matching_commits)} potential matching commits with the files provided")
