@@ -2,9 +2,10 @@ import argparse
 import sys
 import tempfile
 import pygit2
+from pygit2 import discover_repository, Repository
 import logging
 from pathlib import Path
-from .helpers import find_high_frequency_files
+from .helpers import find_high_frequency_files, is_likely_git_url
 
 logger = logging.getLogger(__name__)
 
@@ -124,10 +125,20 @@ def main() -> None:
         repo_location = args.repo_location
         local_dir = Path(args.local_dir)
 
-        # clone repo
-        logger.info(f"Cloning repository from {repo_url}...")
-        repo = pygit2.clone_repository(repo_url, temp_dir, bare=True)
-        # the clone happens directly into temp_dir per observation
+        if is_likely_git_url(repo_location):
+            repo_url = repo_location
+
+            # clone repo
+            logger.info(f"Cloning repository from {repo_url}...")
+            repo = pygit2.clone_repository(repo_url, temp_dir, bare=True)
+            # the clone happens directly into temp_dir per observation
+
+        else:
+            repository_path = discover_repository(repo_location)
+            if repository_path is None:
+                raise ValueError("Provided repo path did not lead to a valid repository")
+            logger.info(f"Using existing repository at {repository_path}...")
+            repo = Repository(repository_path)
 
         # get commits list
         # 2. Replicates: git rev-list --all traversal
