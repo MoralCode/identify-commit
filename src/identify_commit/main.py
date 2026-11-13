@@ -100,7 +100,7 @@ def main() -> None:
             "Find commits containing a specific local file blob using libgit2."
         )
     )
-    parser.add_argument("repo_url", help="URL to the git repository the files came from")
+    parser.add_argument("repo_location", help="URL or filepath to the git repository the files came from")
     parser.add_argument(
         "local_dir", help="Path to the directory of the local files"
     )
@@ -121,7 +121,7 @@ def main() -> None:
     # make temp dir
     with tempfile.TemporaryDirectory() as temp_dir:
 
-        repo_url = args.repo_url
+        repo_location = args.repo_location
         local_dir = Path(args.local_dir)
 
         # clone repo
